@@ -170,10 +170,6 @@
 	};
 };
 
-&pm8998_rtc {
-	qcom,qpnp-rtc-alarm-pwrup = <1>;
-};
-
 /* pm8998.dtsi */
 
 /* sdm845-audio-overlay.dtsi */
