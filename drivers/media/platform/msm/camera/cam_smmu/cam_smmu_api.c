@@ -3046,21 +3046,19 @@ int cam_smmu_destroy_handle(int handle)
 		cam_smmu_clean_kernel_buffer_list(idx);
 	}
 
-	if (&iommu_cb_set.cb_info[idx].is_secure) {
-		if (iommu_cb_set.cb_info[idx].secure_count == 0) {
-			mutex_unlock(&iommu_cb_set.cb_info[idx].lock);
-			return -EPERM;
-		}
-
-		iommu_cb_set.cb_info[idx].secure_count--;
-		if (iommu_cb_set.cb_info[idx].secure_count == 0) {
-			iommu_cb_set.cb_info[idx].cb_count = 0;
-			iommu_cb_set.cb_info[idx].handle = HANDLE_INIT;
-		}
-
+	if (iommu_cb_set.cb_info[idx].secure_count == 0) {
 		mutex_unlock(&iommu_cb_set.cb_info[idx].lock);
-		return 0;
+		return -EPERM;
 	}
+
+	iommu_cb_set.cb_info[idx].secure_count--;
+
+	if (iommu_cb_set.cb_info[idx].secure_count == 0) {
+		iommu_cb_set.cb_info[idx].cb_count = 0;
+		iommu_cb_set.cb_info[idx].handle = HANDLE_INIT;
+	}
+
+	mutex_unlock(&iommu_cb_set.cb_info[idx].lock);
 
 	iommu_cb_set.cb_info[idx].cb_count = 0;
 	iommu_cb_set.cb_info[idx].handle = HANDLE_INIT;
