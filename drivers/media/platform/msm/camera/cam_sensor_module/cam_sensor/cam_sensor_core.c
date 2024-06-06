@@ -968,7 +968,7 @@ int32_t cam_sensor_driver_cmd(struct cam_sensor_ctrl_t *s_ctrl,
 		break;
 	case CAM_IR_UPDATE: {
 		struct cam_sensor_i2c_reg_setting user_reg_setting;
-		struct cam_sensor_i2c_reg_array i2c_reg_setting[cmd->size];
+		struct cam_sensor_i2c_reg_array i2c_reg_setting[44];
 
 		rc = copy_from_user(&user_reg_setting, u64_to_user_ptr(cmd->handle), sizeof(user_reg_setting));
 		if (rc < 0) {
@@ -976,7 +976,7 @@ int32_t cam_sensor_driver_cmd(struct cam_sensor_ctrl_t *s_ctrl,
 			goto release_mutex;
 		}
 
-		rc = copy_from_user(i2c_reg_setting, u64_to_user_ptr(user_reg_setting.reg_setting), sizeof(i2c_reg_setting));
+		rc = copy_from_user(i2c_reg_setting, (void __user *)u64_to_user_ptr((u64)user_reg_setting.reg_setting), sizeof(i2c_reg_setting));
 		if (rc < 0) {
 			CAM_ERR(CAM_SENSOR, "Copy i2c setting from user space failed\n");
 			goto release_mutex;
